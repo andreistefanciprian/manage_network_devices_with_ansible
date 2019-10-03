@@ -12,8 +12,8 @@ The host machine should have connectivity to the devices you want to manage.
 # Prepare virtualenv for executing ansible playbooks
 ```
 # Clone Ansible repo
-git clone --branch <branch-name> git@github.com:VirginWiFi/Sabi0.git
-cd Sabi0
+git clone --branch master git@github.com:andreistefanciprian/manage_network_devices_with_ansible.git
+cd manage_network_devices_with_ansible
 
 # Create virtual environment for running Ansible tasks
 virtualenv .venv
