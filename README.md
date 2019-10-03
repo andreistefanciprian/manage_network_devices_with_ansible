@@ -29,7 +29,7 @@ ansible-galaxy install Juniper.junos
 ```
 # (Option 2) Use the Ansible for Junos OS Docker Image
 ```
-git clone --branch ansible-travelodge git@github.com:VirginWiFi/Sabi0.git; cd Sabi0
+git clone --branch master git@github.com:andreistefanciprian/manage_network_devices_with_ansible.git
 docker run -it --rm -v $PWD:/project juniper/pyez-ansible ash
 cd /project
 ```
