@@ -1,7 +1,7 @@
 # Requirements
 
 #### OS
-Have Ubuntu 18.04 installed with following packages: virtualenv, python-pip
+Have Ubuntu 18.04 installed with following packages: virtualenv, python-pip and docker
 
 #### HOST MACHINE
 GCP n1-standard-2 machine type at minimum (Standard machine type with 2 vCPUs and 7.5 GB of RAM)
