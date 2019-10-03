@@ -9,7 +9,7 @@ GCP n1-standard-2 machine type at minimum (Standard machine type with 2 vCPUs an
 #### Routing/Connectivity
 The host machine should have connectivity to the devices you want to manage. 
 
-# Prepare virtualenv for executing ansible playbooks
+# (Option 1) Use virtualenv for executing ansible playbooks
 ```
 # Clone Ansible repo
 git clone --branch master git@github.com:andreistefanciprian/manage_network_devices_with_ansible.git
@@ -23,6 +23,15 @@ source .venv/bin/activate
 
 # Install package requirements
 pip install -r requirements.txt
+
+# You might also need to install the Juniper role
+ansible-galaxy install Juniper.junos
+```
+# (Option 2) Use the Ansible for Junos OS Docker Image
+```
+git clone --branch ansible-travelodge git@github.com:VirginWiFi/Sabi0.git; cd Sabi0
+docker run -it --rm -v $PWD:/project juniper/pyez-ansible ash
+cd /project
 ```
 
 # Take a backup of current config before executing RFC
