@@ -1,0 +1,36 @@
+---
+- name: Upgrade os image
+  hosts: mikrotiks
+  connection: network_cli
+  gather_facts: no
+
+  tasks:
+    - name: Display firmware version
+      routeros_command:
+        commands: "/system routerboard print"
+      register: firmware_version
+    - name: Display OS version
+      debug: var=firmware_version['stdout_lines']
+
+    - name: Firmware upgrade
+      routeros_command:
+        commands: /system scheduler add name=FMWUPGRADE interval=5s on-event="/system scheduler remove FMWUPGRADE;/system routerboard upgrade"
+
+    - name: Wait for firmware upgrade to take place
+      pause:
+        seconds: 90
+
+    - name: Reboot device
+      routeros_command:
+        commands: /system scheduler add name=REBOOT interval=5s on-event="/system scheduler remove REBOOT;/system reboot"
+
+    - name: Wait for reboot to take place
+      pause:
+        seconds: 60
+
+    - name: Display firmware version
+      routeros_command:
+        commands: "/system routerboard print"
+      register: firmware_version
+    - name: Display OS version
+      debug: var=firmware_version['stdout_lines']

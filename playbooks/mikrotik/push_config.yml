@@ -1,0 +1,40 @@
+---
+- name: "Generate device configuration based on configuration template;
+        Upload config to device and reboot device with new config"
+  hosts: mikrotiks
+  connection: network_cli
+  gather_facts: no
+
+  vars:
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%dT%H%M%S') }}"
+    template_dir: "/sabi_data/templates/mikrotik"
+    config_dir: "/sabi_data/configs/mikrotik"
+#    conf_file_name: "{{ inventory_hostname }}_{{ timestamp }}.rsc"
+    conf_file_name: "{{ inventory_hostname }}_test1.rsc"
+    conf_file_path: "{{ config_dir }}/{{ conf_file_name }}"
+    system_reset_command: "/system reset-configuration keep-users=yes run-after-reset={{ conf_file_name }}"
+
+  tasks:
+    - debug: var=conf_file_path
+
+    - name: Verify if directory exists. If it doesn't exist it will be created
+      file:
+        path: "{{ config_dir }}"
+        state: directory
+
+    - name: Save device information using template
+      template:
+        src: "{{ template_dir }}/template_7.j2"
+        dest: "{{ conf_file_path }}"
+
+    - name: Upload config to device
+      net_put:
+        src: "{{ conf_file_path }}"
+        dest: "{{ conf_file_name }}"
+
+    - name: System reset with new configuration file
+      routeros_command:
+        commands: /system scheduler add name=REBOOT interval=5s on-event="/system scheduler remove REBOOT;{{ system_reset_command }}"
+      register: output
+    - name: Display output
+      debug: var=output['stdout_lines']

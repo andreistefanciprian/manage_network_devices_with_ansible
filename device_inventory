@@ -1,0 +1,7 @@
+[junipers-test]
+JUN_TEST_1 ansible_host=10.170.254.128
+JUN_TEST_2 ansible_host=10.170.255.240
+JUN_TEST_3 ansible_host=10.170.255.19
+
+[mikrotiks]
+MIKROTIK006 ansible_host=10.128.45.7 ansible_network_os=routeros ansible_user=admin ansible_ssh_pass=RandomPass TEST1=VALUE11 TEST2=VALUE21

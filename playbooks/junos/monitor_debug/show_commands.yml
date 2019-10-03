@@ -1,0 +1,25 @@
+- hosts: junipers-test
+  roles:
+    - Juniper.junos
+  connection: local
+  gather_facts: no
+
+  vars_files: ../junos-vault.yml
+
+  tasks:
+
+    - name: "Send command and display output"
+      junos_command:
+        commands:
+          - show version
+          - show vlans
+        provider:
+          host: "{{ ansible_host }}"
+          port: 22
+          username: "{{ junos_username }}"
+          password: "{{ junos_password }}"
+          timeout: 70
+      register: output
+
+    - name: display output
+      debug: var=output.stdout_lines

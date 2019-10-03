@@ -1,0 +1,25 @@
+---
+- name: "Playbook sample to change device config"
+  hosts: junipers-test
+  roles:
+    - Juniper.junos
+  connection: local
+  gather_facts: no
+
+  vars_files: ../junos-vault.yml
+
+  tasks:
+    -
+    - name: "Send RFC commands"
+      juniper_junos_config:
+        config_mode: "private"
+        load: "set"
+        lines:
+          - "set security pki auto-re-enrollment cmpv2 certificate-id UNIQUE_END_ENTITY_CERT re-enroll-trigger-time-percentage 30"
+        comment: "commit message v1"
+        provider:
+          host: "{{ ansible_host }}"
+          port: 22
+          username: "{{ junos_username }}"
+          password: "{{ junos_password }}"
+          timeout: 90

@@ -1,0 +1,25 @@
+---
+- name: "Device configuration backup"
+  hosts: mikrotiks
+  connection: network_cli
+  gather_facts: no
+
+  vars:
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%dT%H%M%S') }}"
+    base_dir: "/var/lib/awx/projects"
+    backup_dir: "{{ base_dir }}/backups/mikrotik"
+    backup_file_name: "{{ inventory_hostname }}.rsc"
+    backup_file_path: "{{ backup_dir }}/{{ backup_file_name }}"
+
+  tasks:
+    - name: Export configuration to file DEVICE_HOSTNAME.rsc
+      routeros_command:
+        commands: "/export file={{ inventory_hostname }}.rsc"
+
+    - name: Copy configuration file from network device to local folder
+      net_get:
+        src: "{{ backup_file_name }}"
+        dest: "{{ backup_file_path }}"
+
+
+

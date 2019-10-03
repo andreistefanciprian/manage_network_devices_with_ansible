@@ -1,0 +1,40 @@
+---
+- name: Upgrade os image
+  hosts: mikrotiks
+  connection: network_cli
+  gather_facts: no
+
+  vars:
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%dT%H%M%S') }}"
+    base_dir: "/var/lib/awx/projects"
+    os_dir: "{{ base_dir }}/os_images/mikrotik"
+    os_file_name: "routeros-mipsbe-6.43.14.npk"
+    os_file_path: "{{ os_dir }}/{{ os_file_name }}"
+
+  tasks:
+    - name: Display OS version
+      routeros_command:
+        commands: "/system package print"
+      register: os_version
+    - name: Display OS version
+      debug: var=os_version['stdout_lines']
+
+    - name: Upload os image to device
+      net_put:
+        src: "{{ os_file_path }}"
+        dest: "{{ os_file_name }}"
+
+    - name: Reboot device and upgrade OS
+      routeros_command:
+        commands: /system scheduler add name=REBOOT interval=5s on-event="/system scheduler remove REBOOT;/system reboot"
+
+    - name: Wait for reboot to take place
+      pause:
+        seconds: 60
+
+    - name: Display OS version
+      routeros_command:
+        commands: "/system package print"
+      register: os_version
+    - name: Display OS version
+      debug: var=os_version['stdout_lines']

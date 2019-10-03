@@ -1,0 +1,30 @@
+---
+- name: "Roll back the configuration to a previous commit"
+  hosts: junipers-test
+  roles:
+    - Juniper.junos
+  connection: local
+  gather_facts: no
+
+  vars_files: ../junos-vault.yml
+
+  vars_prompt:
+    - name: "ROLLBACK"
+      prompt: "Rollback ID of the configuration to restore"
+      private: no
+
+  tasks:
+    - name: "Roll back the configuration and commit"
+      juniper_junos_config:
+        rollback: "{{ ROLLBACK }}"
+        comment: "v03-rollback_config"
+        provider:
+          host: "{{ ansible_host }}"
+          port: 22
+          username: "{{ junos_username }}"
+          password: "{{ junos_password }}"
+          timeout: 90
+      register: response
+    - name: "Print the configuration changes"
+      debug:
+        var: response.diff_lines

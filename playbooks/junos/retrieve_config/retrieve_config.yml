@@ -1,0 +1,33 @@
+---
+- name: "Get Junos OS configuration in set format from all devices in the inventory."
+  hosts: junipers-test
+  roles:
+    - Juniper.junos
+  connection: local
+  gather_facts: no
+
+  vars:
+    #timestamp: "{{ lookup('pipe', 'date +%Y%m%dT%H%M%S') }}"
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%dT%H%M') }}"
+    configs_folder: "configs"
+    config_path: "{{ configs_folder }}/{{ inventory_hostname }}_{{ timestamp }}.set"
+
+  vars_files: ../junos-vault.yml
+
+  tasks:
+
+    - name: "Get committed configuration"
+      juniper_junos_config:
+        retrieve: "committed"
+        format: "set"   # Can have different formats (set/text/json/xml)
+        dest: "{{ config_path }}"
+        provider:
+          host: "{{ ansible_host }}"
+          port: 22
+          username: "{{ junos_username }}"
+          password: "{{ junos_password }}"
+          timeout: 70
+      register: response
+#    - name: "Print result"
+#      debug:
+#        var: response
