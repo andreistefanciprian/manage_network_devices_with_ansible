@@ -38,7 +38,7 @@ cd /project
 
 ## (Option 3) Use docker-compose
 ```buildoutcfg
-docker-compose run my_image ash
+docker-compose run junos_ansible
 ```
 
 # Take a backup of current config before executing RFC
