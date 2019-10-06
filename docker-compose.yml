@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  my_image:
+    image: juniper/pyez-ansible
+
+    volumes:
+      - .:/project
+
+    working_dir: /project
